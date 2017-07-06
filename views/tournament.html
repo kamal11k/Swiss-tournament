@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" type="text/css" href="style.css">
+    <title></title>
+</head>
+<body>
+    <div>
+        <header>
+            <h1>Tournament</h1>
+        </header>
+    </div>
+    <div>
+        <form method='post' action='/createTournament'>
+        <div class='container'>
+            <h3>Create tournament</h3>
+            <input type="text" placeholder="Enter tournament name" name="t_name">
+
+            <label>
+                <button type="submit">Create</button>
+            </label>
+        </div>
+        </form>
+    </div>
+    <div>
+        <form method='get' action='/viewTournament'>
+        <div class='container'>
+            <h3>View tournaments</h3>
+            <label>
+                <button type="submit">View</button>
+            </label>
+        </div>
+        </form>
+    </div>
+</body>
+</html>

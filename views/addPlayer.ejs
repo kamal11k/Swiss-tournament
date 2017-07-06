@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+</head>
+<body>
+    <form method='post' action='/addPlayer'>
+            <input type="text" hidden value='<%=t_id%>' name='t_id'>
+            <input type="text" name='p_name'>
+            <button type="submit">Add Player</button>
+            <hr>
+    </form>
+    <form method='post' action='/individualTournament'>
+            <input type="text" hidden value='<%=t_id%>' name='t_id'>
+            <p>Click after adding all players</p> <button type="submit">Done??</button>
+            <hr>
+    </form>
+</body>
+</html>
