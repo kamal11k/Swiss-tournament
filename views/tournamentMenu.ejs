@@ -1,23 +1,38 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title></title>
+    <link rel="stylesheet" type="text/css" href="http://localhost:8000/style.css">
 </head>
 <body>
-    <form method='post' action='/Play'>
-            <input type="text" hidden value='<%=t_id%>' name='t_id'>
+    <header>
+        <h1>Enjoy Playing..</h1>
+    </header>
+    <div class='container'>
+        <form method='post' action='/Play'>
+            <input class='hidden' type="text" hidden value='<%=t_id%>' name='t_id'>
             <button type="submit">Add Player</button>
             <hr>
-    </form>
-    <form method='post' action='/Execute'>
-            <input type="text" hidden value='<%=t_id%>' name='t_id'>
+        </form>
+        <form method='post' action='/Players'>
+            <input class='hidden' type="text" hidden value='<%=t_id%>' name='t_id'>
+            <button type="submit">See Players</button>
+            <hr>
+        </form>
+        <form method='post' action='/Execute'>
+            <input class='hidden' type="text" hidden value='<%=t_id%>' name='t_id'>
             <button type="submit">Execute Round</button>
             <hr>
-    </form>
-    <form method='post' action='/showStanding'>
-            <input type="text" hidden value='<%=t_id%>' name='t_id'>
+        </form>
+        <form method='post' action='/showStanding'>
+            <input class='hidden' type="text" hidden value='<%=t_id%>' name='t_id'>
             <button type="submit">Show standing</button>
             <hr>
-    </form>
+        </form>
+        <form method='post' action='/getFixture'>
+            <input class='hidden' type="text" hidden value='<%=t_id%>' name='t_id'>
+            <button type="submit">Get Fixture</button>
+            <hr>
+        </form>
+    </div>
 </body>
 </html>

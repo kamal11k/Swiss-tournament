@@ -1,15 +1,22 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title></title>
+    <link rel="stylesheet" type="text/css" href="http://localhost:8000/style.css">
 </head>
 <body>
-    <% for(let i=0; i<data.length; i++){%>
+    <header>
+        <h2>Your tournaments</h2>
+    </header>
+    <div class = 'container'>
+        <h3>Click to view</h3>
+        <% for(let i=0; i<data.length; i++){%>
         <form method='post' action='/individualTournament'>
-                <input type="text" hidden value='<%=data[i].id%>' name='t_id'>
-                <button type="submit"><%=data[i].name%></button>
-                <hr>
+                <input class='hidden' type="text" hidden value='<%=data[i].id%>' name='t_id'>
+                <label>
+                    <button type="submit"><%=data[i].name%></button>
+                </label>
         </form>
     <%}%>
+    </div>
 </body>
 </html>

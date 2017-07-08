@@ -1,19 +1,19 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title></title>
+    <link rel="stylesheet" type="text/css" href="http://localhost:8000/style.css">
 </head>
 <body>
-    <form method='post' action='/addPlayer'>
-            <input type="text" hidden value='<%=t_id%>' name='t_id'>
-            <input type="text" name='p_name'>
+    <div class='container'>
+        <form method='post' action='/addPlayer'>
+            <input class='hidden' type="text" hidden value='<%=t_id%>' name='t_id'>
+            <input type="text" placeholder="Enter player Name" name='p_name'>
             <button type="submit">Add Player</button>
-            <hr>
-    </form>
+        </form>
+    </div>
     <form method='post' action='/individualTournament'>
-            <input type="text" hidden value='<%=t_id%>' name='t_id'>
-            <p>Click after adding all players</p> <button type="submit">Done??</button>
-            <hr>
+            <input class='hidden' type="text" hidden value='<%=t_id%>' name='t_id'>
+            <p>Click after adding all players</p> <button class='player' type="submit">Done??</button>
     </form>
 </body>
 </html>

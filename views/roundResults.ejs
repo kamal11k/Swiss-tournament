@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" type="text/css" href="http://localhost:8000/style.css">
+</head>
+<body>
+    <header>
+        <h2>Round finished successfully</h2>
+    </header>
+    <div class = 'container'>
+        <h3>Round Results:</h3>
+        <% for(let i=0; i<data.length; i++){%>
+        <label>
+            <button style="background-color:#7f247c; font-size: 15px"><%=data[i]%></button>
+        </label>
+    <%}%>
+    </div>
+    <div>
+        <form method='post' action='/showStanding'>
+            <input class='hidden' type="text" hidden value='<%=t_id%>' name='t_id'>
+            <button class='player' type="submit">Current standing</button>
+        </form>
+    </div>
+</body>
+</html>

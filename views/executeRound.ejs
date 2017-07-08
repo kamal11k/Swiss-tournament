@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" type="text/css" href="http://localhost:8000/style.css">
+</head>
+<body>
+    <div class='container'>
+        <form method='post' action='/ExecuteRound'>
+            <input class='hidden' type="text" hidden value='<%=t_id%>' name='t_id'>
+            <input type="text" placeholder="Enter round no." name='round'>
+            <button type="submit">Execute Round</button>
+        </form>
+    </div>
+</body>
+</html>

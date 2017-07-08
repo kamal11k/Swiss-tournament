@@ -2,7 +2,7 @@ var express = require('express');
 var path = require('path');
 var morgan = require('morgan');
 var bodyParser = require('body-parser');
-var swiss = require ('./controller/swisstourney.js');
+var swiss = require ('./lib/swisstourney.js');
 
 var host = 'localhost';
     port = 8000;
@@ -127,51 +127,88 @@ app.post('/logIn',function(req,res,next){
     })
 })
 
-app.get('/play/:round',function(req,res,next){
-    swiss.swissPairings(function(error, sp) {
+app.post('/ExecuteRound',function(req,res,next){
+    var t_id = req.body.t_id;
+    var round = req.body.round;
+    swiss.swissPairings(t_id,function(error, sp) {
+        var arr = [];
         sp.forEach(function(pairing, index){
             if (Math.random() > 0.5) {
-                swiss.reportMatch(req.params.round, pairing[0].id, pairing[1].id, function(){
+                swiss.reportMatch(t_id,round, pairing[0].id, pairing[1].id, function(){
                     if (index == sp.length - 1) {
-                        swiss.playerStandings(function(error, x) {
+                        swiss.playerStandings(t_id,function(error, x) {
                             if (error) {
                                 res.end('error');
                             }
                             else {
-                                res.json(x);
+                                //res.json(x);
                             }
                         });
                     }
                 });
+                arr.push(`${pairing[0].name} beats ${pairing[1].name}`);
                 //res.json(`${pairing[0].name} beats ${pairing[1].name}`);
             }
             else {
-                swiss.reportMatch(req.params.round, pairing[1].id, pairing[0].id, function(){
+                swiss.reportMatch(t_id, round, pairing[1].id, pairing[0].id, function(){
                     if (index == sp.length - 1) {
-                        swiss.playerStandings(function(error, x) {
+                        swiss.playerStandings(t_id,function(error, x) {
                             if (error) {
                                 res.end('error');
                             }
                             else {
-                                res.json(x);
+                                //res.json(x);
                             }
                         });
                     }
                 });
+                arr.push(`${pairing[1].name} beats ${pairing[0].name}`);
                 //res.json(`${pairing[1].name} beats ${pairing[0].name}`);
             }
         });
+        res.render('roundResults.ejs',{"data":arr,"t_id":t_id});
     });
 })
 
+app.post('/Execute',function(req,res,next){
+    var tournament_id = req.body.t_id;
+    res.render('executeRound.ejs',{"t_id":tournament_id})
+});
+
 app.post('/showStanding',function(req,res,next){
     var tournament_id = req.body.t_id;
-    console.log(tournament_id,"mmmmmmmmmmmmmmmmmmmmmmmmmmmmm")
-    swiss.playerStandings(tournament_id,function(error,x){
+    swiss.playerStandings(tournament_id,function(error,data){
         if(error)
             res.end('Error');
         else{
-            res.json(x);
+            //res.json(data);
+            res.render('showStanding.ejs',{'data':data})
+        }
+
+    })
+});
+
+app.post('/getFixture',function(req,res,next){
+    var tournament_id = req.body.t_id;
+    swiss.swissPairings(tournament_id,function(error,data){
+        if(error)
+            res.end('Error');
+        else{
+            //res.json(data);
+            res.render('getFixture.ejs',{'data':data})
+        }
+
+    })
+});
+
+app.post('/Players',function(req,res,next){
+    var tournament_id = req.body.t_id;
+    swiss.seePlayers(tournament_id,function(error,data){
+        if(error)
+            res.end('Error');
+        else{
+            //res.json(data);
+            res.render('seePlayers.ejs',{'data':data})
         }
 
     })
@@ -182,7 +219,7 @@ app.get('/createTournament',checkSignIn,function(req,res,next){
     res.sendFile(path.join(__dirname + '/views/tournament.html'));
 })
 app.use('/',express.static(path.join(__dirname ,'/views')));
-app.use(express.static(__dirname + './controller'));
+//app.use(express.static(__dirname + './controller'));
 
 function checkSignIn(req, res, next){
     if(req.session.user_name){
