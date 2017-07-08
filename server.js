@@ -79,9 +79,9 @@ app.post('/register',function(req,res,next){
 })
 
 app.post('/createTournament',checkSignIn,function(req,res,next){
-    var user_name = req.session.user_name;
+    var user_id = req.session.user_id;
     var t_name = req.body.t_name;
-    swiss.createTournament(user_name,t_name,function(error,x){
+    swiss.createTournament(user_id,t_name,function(error,x){
         if(error)
             res.end('Unsuccessfull');
         else
@@ -91,8 +91,8 @@ app.post('/createTournament',checkSignIn,function(req,res,next){
 })
 
 app.get('/viewTournament',checkSignIn,function(req,res,next){
-    var user_name = req.session.user_name;
-    swiss.viewTournament(user_name,function(error,x){
+    var user_id = req.session.user_id;
+    swiss.viewTournament(user_id,function(error,x){
         if(error)
             res.end('Unsuccessfull');
         else{
@@ -119,7 +119,7 @@ app.post('/logIn',function(req,res,next){
         if(error)
             res.end('Error occured');
         else if(pswd == result.password){
-            req.session.user_name = result.user_name;
+            req.session.user_id = result.id;
             res.redirect('/createTournament')
         }
         else
@@ -222,7 +222,7 @@ app.use('/',express.static(path.join(__dirname ,'/views')));
 //app.use(express.static(__dirname + './controller'));
 
 function checkSignIn(req, res, next){
-    if(req.session.user_name){
+    if(req.session.user_id){
         next();     //If session exists, proceed to page
     }
     else {
