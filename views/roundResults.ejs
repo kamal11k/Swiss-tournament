@@ -18,7 +18,11 @@
     <div>
         <form method='post' action='/showStanding'>
             <input class='hidden' type="text" hidden value='<%=t_id%>' name='t_id'>
-            <button class='player' type="submit">Current standing</button>
+            <button class='player' type="submit">Standing</button>
+        </form>
+        <form method='post' action='/getFixture'>
+            <input class='hidden' type="text" hidden value='<%=t_id%>' name='t_id'>
+            <button class="player" type="submit">Fixture</button>
         </form>
     </div>
 </body>

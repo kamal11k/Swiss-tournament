@@ -2,18 +2,41 @@
 <html>
 <head>
     <link rel="stylesheet" type="text/css" href="http://localhost:8000/style.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.0/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 </head>
 <body>
-    <div class='container'>
-        <form method='post' action='/addPlayer'>
-            <input class='hidden' type="text" hidden value='<%=t_id%>' name='t_id'>
-            <input type="text" placeholder="Enter player Name" name='p_name'>
-            <button type="submit">Add Player</button>
-        </form>
+<header>
+    <h2>Add Players to your tournament</h2>
+</header>
+    <div class="row">
+        <div class='col-md-6 container'>
+            <h4 style="padding-left: 140px">Add new player</h4>
+            <form style="text-align: center" method='post' action='/addNewPlayer'>
+                <input class='hidden' type="text" hidden value='<%=t_id%>' name='t_id'>
+                <input class="player" type="text" placeholder="Enter player Name" name='p_name'>
+                <button class="player" type="submit">Add</button>
+            </form>
+        </div>
+        <div class='col-md-6 container'>
+            <h4 style="padding-left: 240px" >Add Existing player</h4>
+            <form style="text-align: center" method='post' action='/addExistingPlayer'>
+                <input class='hidden' type="text" hidden value='<%=t_id%>' name='t_id'>
+                <select name='p_name'>
+                    <%for(var i=0;i<data.length;i++){%>
+                        <option value="<%=data[i].name%>"><%=data[i].name%></option>
+                    <%}%>
+                </select>
+                <button class="player" type="submit">Add</button>
+            </form>
+        </div>
     </div>
-    <form method='post' action='/individualTournament'>
+    <br><br><br><br>
+    <form style="text-align: center" method='post' action='/individualTournament'>
             <input class='hidden' type="text" hidden value='<%=t_id%>' name='t_id'>
-            <p>Click after adding all players</p> <button class='player' type="submit">Done??</button>
+            <p>Click after adding all players</p>
+            <button class='player' type="submit">Done??</button>
     </form>
 </body>
 </html>

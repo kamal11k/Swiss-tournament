@@ -22,15 +22,35 @@ app.use(session({   secret: 'winter is coming' ,
         );
 
 
-app.post('/addPlayer',function(req,res,next){
+app.post('/addnewPlayer',function(req,res,next){
     var tournament_id = req.body.t_id;
     var player_name = req.body.p_name;
-    swiss.registerPlayer(player_name,tournament_id,function(error,x){
+    var user_id = req.session.user_id;
+    console.log(user_id);
+    console.log(tournament_id);
+    console.log(player_name);
+    swiss.registerNewPlayer(user_id,tournament_id,player_name,function(error,x){
         if(error)
             res.end('Registration failure');
         else
             //res.end('Player registered successfully!!');
-            res.render('addPlayer.ejs',{"t_id":tournament_id});
+            res.render('addPlayer.ejs',{"t_id":tournament_id,"data":x});
+    })
+})
+
+app.post('/addExistingPlayer',function(req,res,next){
+    var tournament_id = req.body.t_id;
+    var player_name = req.body.p_name;
+    var user_id = req.session.user_id;
+    console.log(user_id);
+    console.log(tournament_id);
+    console.log(player_name);
+    swiss.registerExistingPlayer(user_id,tournament_id,player_name,function(error,x){
+        if(error)
+            res.end('Registration failure');
+        else
+            //res.end('Player registered successfully!!');
+            res.render('addPlayer.ejs',{"t_id":tournament_id,"data":x});
     })
 })
 
@@ -108,9 +128,18 @@ app.post('/individualTournament',checkSignIn,function(req,res,next){
     res.render('tournamentMenu.ejs',{"t_id":tournament_id})
 })
 
-app.post('/Play',checkSignIn,function(req,res,next){
+app.post('/add_player',checkSignIn,function(req,res,next){
     var tournament_id = req.body.t_id;
-    res.render('addPlayer.ejs',{"t_id":tournament_id});
+    var user_id = req.session.user_id;
+    swiss.existingPlayers(user_id,tournament_id,function(error,results){
+        if(error){
+            res.end('error')
+        }
+        else{
+            res.render('addPlayer.ejs',{"t_id":tournament_id,"data":results});
+        }
+    })
+
 })
 app.post('/logIn',function(req,res,next){
     var user_name = req.body.user_name;
