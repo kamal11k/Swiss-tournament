@@ -28,6 +28,17 @@ button {
     width: 100%;
 }
 
+button[class=logout] {
+    background-color: #d23636;
+    color: white;
+    float: right;
+    padding: 14px 20px;
+    margin: 8px 0;
+    border: none;
+    cursor: pointer;
+    width: 100px;
+}
+
 .fixture {
 
     align-items: center;
