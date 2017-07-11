@@ -3,6 +3,8 @@ var path = require('path');
 var morgan = require('morgan');
 var bodyParser = require('body-parser');
 var swiss = require ('./lib/swisstourney.js');
+var bcrypt = require('bcrypt');
+const saltRounds = 10;
 
 var host = 'localhost';
     port = 8000;
@@ -68,24 +70,18 @@ app.delete('/delete',function(req,res,next){
     })
 })
 
-app.delete('/delete/:id',function(req,res,next){
-    swiss.removePlayer(req.params.id,function(error,x){
-        if(error)
-            res.end('Error occured');
-        else
-            res.end('deleted row(s) '+x);
-    })
-})
-
-// var app = express.Router();
-// app.use(bodyParser.json());
-
-
-// app.get('/',function(req,res,next){
-//     res.end(200,{'Content-Type':'text/html'});
+// app.delete('/delete/:id',function(req,res,next){
+//     swiss.removePlayer(req.params.id,function(error,x){
+//         if(error)
+//             res.end('Error occured');
+//         else
+//             res.end('deleted row(s) '+x);
+//     })
 // })
 
+
 app.post('/register',function(req,res,next){
+    req.body.hash = bcrypt.hashSync(req.body.pswd, saltRounds)
     swiss.registerUser(req.body,function(error,x){
         if(error)
             res.end('Registration failure');
@@ -156,7 +152,7 @@ app.post('/logIn',function(req,res,next){
     swiss.checkUser(user_name,pswd,function(error,result){
         if(error)
             res.end('Error occured');
-        else if(pswd == result.password){
+        else if(bcrypt.compareSync(pswd, result.password)){
             req.session.user_id = result.id;
             res.redirect('/createTournament')
         }
@@ -168,44 +164,57 @@ app.post('/logIn',function(req,res,next){
 app.post('/ExecuteRound',checkSignIn,function(req,res,next){
     var t_id = req.body.t_id;
     var round = req.body.round;
-    swiss.swissPairings(t_id,function(error, sp) {
-        var arr = [];
-        sp.forEach(function(pairing, index){
-            if (Math.random() > 0.5) {
-                swiss.reportMatch(t_id,round, pairing[0].id, pairing[1].id, function(){
-                    if (index == sp.length - 1) {
-                        swiss.playerStandings(t_id,function(error, x) {
-                            if (error) {
-                                res.end('error');
-                            }
-                            else {
-                                //res.json(x);
-                            }
-                        });
-                    }
-                });
-                arr.push(`${pairing[0].name} beats ${pairing[1].name}`);
-                //res.json(`${pairing[0].name} beats ${pairing[1].name}`);
+    console.log(round)
+    swiss.countPlayers(t_id,function(error,count){
+        if(error){
+            res.end(error)
+        }
+        else {
+            if(round > Math.log2(count)){
+                res.end('Tournament finished.  See winner in PlayerStanding');
             }
             else {
-                swiss.reportMatch(t_id, round, pairing[1].id, pairing[0].id, function(){
-                    if (index == sp.length - 1) {
-                        swiss.playerStandings(t_id,function(error, x) {
-                            if (error) {
-                                res.end('error');
-                            }
-                            else {
-                                //res.json(x);
-                            }
-                        });
-                    }
+                swiss.swissPairings(t_id,function(error, sp) {
+                    var arr = [];
+                    sp.forEach(function(pairing, index){
+                        if (Math.random() > 0.5) {
+                            swiss.reportMatch(t_id,round, pairing[0].id, pairing[1].id, function(){
+                                if (index == sp.length - 1) {
+                                    swiss.playerStandings(t_id,function(error, x) {
+                                        if (error) {
+                                            res.end('error');
+                                        }
+                                        else {
+                                            //res.json(x);
+                                        }
+                                    });
+                                }
+                            });
+                            arr.push(`${pairing[0].name} beats ${pairing[1].name}`);
+                            //res.json(`${pairing[0].name} beats ${pairing[1].name}`);
+                        }
+                        else {
+                            swiss.reportMatch(t_id, round, pairing[1].id, pairing[0].id, function(){
+                                if (index == sp.length - 1) {
+                                    swiss.playerStandings(t_id,function(error, x) {
+                                        if (error) {
+                                            res.end('error');
+                                        }
+                                        else {
+                                            //res.json(x);
+                                        }
+                                    });
+                                }
+                            });
+                            arr.push(`${pairing[1].name} beats ${pairing[0].name}`);
+                            //res.json(`${pairing[1].name} beats ${pairing[0].name}`);
+                        }
+                    });
+                    res.render('roundResults.ejs',{"data":arr,"t_id":t_id});
                 });
-                arr.push(`${pairing[1].name} beats ${pairing[0].name}`);
-                //res.json(`${pairing[1].name} beats ${pairing[0].name}`);
             }
-        });
-        res.render('roundResults.ejs',{"data":arr,"t_id":t_id});
-    });
+        }
+    })
 })
 
 app.post('/Execute',checkSignIn,function(req,res,next){
